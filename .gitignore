@@ -1,8 +1,11 @@
-__pycache__/
+*.egg-info/
 *.pyc
 .eggs/
-*.egg-info/
+.env
+.env.*
+.venv/
+__pycache__/
 build/
 dist/
-.env
-.venv/
+dist/*.tmp
+node_modules/
