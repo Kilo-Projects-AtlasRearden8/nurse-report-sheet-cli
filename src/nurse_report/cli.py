@@ -132,6 +132,74 @@ def done_task(storage: Storage, report_id: str, task_index: int) -> None:
     click.echo(f"Marked task {task_index} done in {report_id}")
 
 
+@main.command(name="update")
+@click.argument("report_id")
+@click.option("--name", default=None, help="Patient full name.")
+@click.option("--room", default=None, help="Room number.")
+@click.option("--age", type=click.INT, default=None, help="Patient age.")
+@click.option("--allergies", default=None, help="Comma-separated allergies.")
+@click.option("--code-status", default=None, help="Code status.")
+@click.option("--primary-dx", default=None, help="Primary diagnosis.")
+@click.option("--shift", default=None, help="Shift (day/evening/night).")
+@click.option("--date", default=None, help="Report date (YYYY-MM-DD).")
+@click.option("--nurse", default=None, help="Nurse name.")
+@click.option("--summary", default=None, help="Patient summary.")
+@click.pass_obj
+def update_report(
+    storage: Storage,
+    report_id: str,
+    name: Optional[str],
+    room: Optional[str],
+    age: Optional[int],
+    allergies: Optional[str],
+    code_status: Optional[str],
+    primary_dx: Optional[str],
+    shift: Optional[str],
+    date: Optional[str],
+    nurse: Optional[str],
+    summary: Optional[str],
+) -> None:
+    """Update fields on an existing report (MRN is the file key and cannot change)."""
+    report = storage.load(report_id)
+    p = report.patient
+    if name is not None:
+        p.name = name
+    if room is not None:
+        p.room = room
+    if age is not None:
+        p.age = age
+    if allergies is not None:
+        p.allergies = [a.strip() for a in allergies.split(",") if a.strip()]
+    if code_status is not None:
+        p.code_status = code_status
+    if primary_dx is not None:
+        p.primary_dx = primary_dx
+    if shift is not None:
+        report.shift = shift
+    if date is not None:
+        report.date = date
+    if nurse is not None:
+        report.nurse = nurse
+    if summary is not None:
+        report.summary = summary
+    storage.save(report)
+    click.echo(f"Updated report {report_id}")
+
+
+@main.command(name="delete")
+@click.argument("report_id")
+@click.option("--yes", is_flag=True, help="Skip confirmation prompt.")
+@click.pass_obj
+def delete_report(storage: Storage, report_id: str, yes: bool) -> None:
+    """Delete a stored report."""
+    if not yes:
+        if not click.confirm(f"Delete report {report_id}?"):
+            click.echo("Cancelled.")
+            return
+    storage.delete(report_id)
+    click.echo(f"Deleted {report_id}")
+
+
 @main.command(name="list")
 @click.pass_obj
 def list_reports(storage: Storage) -> None:

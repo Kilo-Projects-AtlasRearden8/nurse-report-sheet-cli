@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-import os
 import re
 from pathlib import Path
 from typing import Optional
@@ -57,7 +55,3 @@ class Storage:
         path = self._path(report_id)
         if path.exists():
             path.unlink()
-
-
-def report_id_stem(path: Path) -> str:
-    return path.stem

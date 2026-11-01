@@ -90,7 +90,7 @@ def to_pdf(report: ShiftReport, output: Path | str) -> Path:
         ["Nurse:", report.nurse or "—", "Code Status:", p.code_status or "—"],
         ["Allergies:", ", ".join(p.allergies) or "—", "Primary DX:", p.primary_dx or "—"],
     ]
-    info_table = Table(info, colWidths=[0.9 * inch, 2.6 * inch, 0.9 * inch, 2.6 * inch])
+    info_table = Table(info, colWidths=[0.8 * inch, 2.4 * inch, 0.8 * inch, 2.4 * inch])
     info_table.setStyle(
         TableStyle(
             [
